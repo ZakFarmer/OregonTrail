@@ -5,8 +5,21 @@ import copy
 import colorsys
 import pickle
 import time
+import eztext as eztext
 
+from lib.afflictions import Afflictions
+from lib.afflictionBox import AfflictionBox
 from lib.tombstone import Tombstone
+from lib.buffalo import buffalo
+from lib.shop import Shop
+from lib.passenger import Passenger
+from lib.passengerTab import PassengerTab
+from lib.riverDebris import RiverDebris
+from lib.riverOptionButton import RiverOptionButton
+from lib.menuButton import MenuButton
+from lib.scrollButton import ScrollButton
+from lib.backgroundSprites import BackgroundSprites
+from lib.transactionButton import TransactionButton
 
 pygame.init()
 clock = pygame.time.Clock()
