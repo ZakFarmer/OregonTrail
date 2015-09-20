@@ -9,5 +9,7 @@ class PassengerTab(Surface):
 		self.textFont = font.Font(None, 15)
 		self.passengerSurface = Surface(self.size.convert())
 		self.rect = Rect(self.position, self.size)
+		self.optionImage = transform.scale(image.load(resourcePath + "img/optionIcon.png"), (20, 20))
+		self.optionRect = self.optionImage.get_rect()
 		
 		
