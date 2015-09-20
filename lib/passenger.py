@@ -9,4 +9,4 @@ class Passenger():
 		self.foodDivisions = 2
 		self.status = "healthy"
 	def __str__(self):
-		return(self.name)
+		return(self.name) # Return passenger name.
