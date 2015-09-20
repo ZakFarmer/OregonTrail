@@ -52,3 +52,76 @@ class Shop():
 			self.name = name
 		self.render()
 		
+	def get_surface(self):
+		self.render()
+		return self.shopSurface
+		
+	def update(self, groupInv, groupMoney):
+		self.groupInventory = groupInv
+		self.groupMoney = groupMoney
+		self.render()
+		
+	def move(self, moveValue):
+		self.posX += (2 * moveValue)
+		self.render()
+		
+	def render(self):
+		self.yValue = 40
+		self.shopSurface.fill((133, 94, 66))
+		self.shopSurface.blit(self.titleFont.render(self.name + " - $" + str(self.money), 1, (0, 0, 255)), (10, 5))
+		self.shopSurface.blit(self.invContainer, (10, 25))
+		self.shopSurface.blit(self.invContainer, (10, self.shopSurface.get_height() / 2 + 30))
+		self.shopSurface.blit(self.textFont.render("Inventory", 1, (255, 0, 0)), (10, 25))
+		self.shopSurface.blit(self.textFont.render("Amount", 1, (255, 0, 0)), (130, 25))
+		self.shopSurface.blit(self.textFont.render("Price", 1, (255, 0, 0)), (200, 25))
+		
+		for key in list(self.inventory.keys()):
+			self.shopSurface.blit(self.textFont.render(key + ":", 1, (0, 0, 0)), (10, self.yValue))
+			self.shopSurface.blit(self.textFont.render(str(self.inventory[key]), 1,
+													   (0, 0, 0)), (150, self.yValue))
+			self.shopSurface.blit(self.textFont.render("$"+str(self.itemPrices[key] * self.priceModifier), 1, 
+													   (0, 0, 0)), (200, self.yValue))
+			if (len(self.buyButtonList) < len(self.inventory.keys())):
+				buttonPos = tuple(map(sum, zip(self.blitPosition, (250, self.yValue))))
+				self.buyButtonList.append(TransactionButton(transaction = "buy",
+															item = key,
+															imagePosition = (250, self.yValue),
+															rectPosition = buttonPos,
+															resourcePath = self.resourcePath))
+			self.yValue += 30
+			
+		for button in self.buyButtonList:
+			self.shopSurface.blit(button.image, button.imagePosition)
+			
+		self.shopSurface.blit(self.sepLine, (0, float(self.shopSurface.get_height()) / 2))
+		self.shopSurface.blit(self.titleFont.render("You - $" + str(self.groupMoney), 1, (0, 0, 255)),
+												    (10, float(self.shopSurface.get_height()) / 2 + 10))
+		self.shopSurface.blit(self.titleFont.render("Inventory", 1, (255, 0, 0)),
+													(10, float(self.shopSurface.get_height()) / 2 + 30))
+		self.shopSurface.blit(self.titleFont.render("Amount", 1, (255, 0, 0)),
+													(130, float(self.shopSurface.get_height()) / 2 + 30))
+		self.shopSurface.blit(self.titleFont.render("Price", 1, (255, 0, 0)),
+													(200, float(self.shopSurface.get_height()) / 2 + 30))
+													
+		self.yValue = (float(self.shopSurface.get_height()) / 2) + 45
+		
+		
+		for key in list(self.groupInventory.keys()):
+			self.shopSurface.blit(self.textFont.render(key + ":", 1, (0, 0, 0)), (10, self.yValue))
+			self.shopSurface.blit(self.textFont.render(str(self.groupInventory[key]), 1,
+													  (0, 0, 0)), (150, self.yValue))
+			self.shopSurface.blit(self.textFont.render("$" + str(self.itemPrices[key] * self.priceModifier), 1,
+													  (0, 0, 0)), (200, self.yValue))
+			if (len(self.sellButtonList) < len(self.inventory.keys())):
+				buttonPos = tuple(map(sum, zip(self.blitPosition, (250, self.yValue))))
+				self.sellButtonList.append(TransactionButton(transaction = "sell",
+															 item = key,
+															 imagePosition = (250, self.yValue),
+															 rectPosition = buttonPos,
+															 resourcePath = self.rresourcePath))
+			self.yValue += 30
+			
+		for button in self.sellButtonList:
+			self.shopSurface.blit(button.image, button.imagePosition)
+													
+													
