@@ -1,9 +1,9 @@
 from pygame import Surface, font
 from copy import copy
 from random import randint, choice
-from string import capitalize
+import string
 
-from transactionButton import TransactionButton
+from lib.transactionButton import TransactionButton
 
 SHOP_PREFIX = ["archer", "baker", "fisher", "miller", "rancher", "robber"]
 SHOP_SUFFIX = ["cave", "creek", "desert", "farm", "field", "forest", "hill", "lake", "mountain", "pass", "valley", "woods"]

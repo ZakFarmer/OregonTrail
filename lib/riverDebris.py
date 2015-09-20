@@ -1,7 +1,7 @@
 from pygame import sprite, image, transform
 from random import randint
 
-class riverDebris(sprite.Sprite):
+class RiverDebris(sprite.Sprite):
 	def __init__(self, size, posX, posY, randomGen, picture, riverPos, resourcePath):
 		sprite.Sprite.__init__(self)
 		self.picture = picture

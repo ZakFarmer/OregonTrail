@@ -5,13 +5,14 @@ import copy
 import colorsys
 import pickle
 import time
-import eztext as eztext
+import lib.eztext
 
 from lib.afflictions import Afflictions
 from lib.afflictionBox import AfflictionBox
 from lib.tombstone import Tombstone
-from lib.buffalo import buffalo
+from lib.buffalo import Buffalo
 from lib.shop import Shop
+from lib.event import Event
 from lib.passenger import Passenger
 from lib.passengerTab import PassengerTab
 from lib.riverDebris import RiverDebris
@@ -35,9 +36,9 @@ deceasedList = []
 afflictionsList = []
 groupAfflictions = []
 
-resources = "res/"
-malePictures = []
-femalePictures = []
+resourcePath = "res/"
+malePictures = ["maleface1"]
+femalePictures = ["femaleface1"]
 
 class mainGame():
     def __init__(self):
@@ -126,8 +127,36 @@ class mainGame():
                                                              position = randomPos,
                                                              blitPosition = self.shopBlitPosition,
                                                              money = None,
-                                                             resources = resources))
-                                         print("Town created at", str(randomPos))
-                                         calculatePos = False
+                                                             resources = resourcePath))
+                                        print("Town created at " + str(randomPos))
+                                        calculatePos = False
+                                        break
+         try:
+                 with open("tombstoneData.dat", "rb") as fileName:
+                         self.tombstoneList = pickle.load(fileName)
+                         for tomb in self.tombstoneList:
+                                 tomb.status = "Old"
+         except (EOFError, IOError):
+                 print("Error opening tombstone data, pickling an empty list...")
+                 with open("tombstoneData.dat", "wb") as fileName:
+                         self.tombstoneList = []
+                         pickle.dump([], fileName)
+         
+         for x in range(self.numEvents):
+                 validPos = False
+                 loopCounter = 0
+                 while not validPos:
+                         randPos = random.randint(1, self.gameLength)
+                         
+                         if (loopCounter >= 100):
+                                 self.randomBlit.append(Event(pos = randPos, resourcePath = resourcePath))
+                                 validPos = True
+                         for pos in [posX for x in self.randomBlit]:
+                                 if (abs(randPos - pos) <= 20):
                                          break
+                                 else:
+                                         self.randomBlit.append(Event(pos = randPos, resourcePath = resourcePath))
+                                         validPos = TTrue
+                                 loopCounter += 1
+                 
                                         
