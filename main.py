@@ -38,9 +38,9 @@ afflictionsDict = {"Dysentry": (0.7, 6, "winter", 7, (4, 6)), # 'You have died o
                     "Well Fed": (0, 0, "none", 2, -1)
                     }
 
-passengerList = [Passenger(name = "Cave Johnson", age = 56, gender = "male", image = pygame.image.load(resourcePath + "img/50.png")),
-                 Passenger(name = "Zak Farmer", age = 14, gender = "male", image = pygame.image.load(resourcePath + "img/50.png")),
-                 Passenger(name = "Cave Rohnson", age = 56, gender = "male", image = pygame.image.load(resourcePath + "img/50.png"))]
+passengerList = [Passenger(name = "Rare Pepe", age = 56, gender = "male", image = resourcePath + "img/passengers/passenger1.png"),
+                 Passenger(name = "Ainsley Harriott", age = 14, gender = "male", image = resourcePath + "img/passengers/passenger2.png"),
+                 Passenger(name = "Michael Rosen", age = 56, gender = "male", image = resourcePath + "img/passengers/passenger3.png")]
 afflictionsList = []
 deceasedList = []
 groupAfflictions = []
@@ -63,7 +63,7 @@ class Game():
         self.exit_button_rect = self.exit_button.get_rect()
         self.exit_button_rect.centerx = self.gameWindow.get_width() - self.exit_button.get_width() / 2
         self.exit_button_rect.centery = self.exit_button.get_height()/2
-        self.tomb_image = pygame.image.load(resourcePath+"img/tombstone.png")
+        self.tombImage = pygame.image.load(resourcePath+"img/tombstone.png")
         self.town_image = pygame.image.load(resourcePath+"img/town.png")
         self.road = pygame.Surface((self.gameWindow.get_width(), self.gameWindow.get_height() / 3)).convert()
         self.road.fill((139, 69, 19))
@@ -87,6 +87,7 @@ class Game():
         self.season = ""
         self.mouseX = 0
         self.mouseY = 0
+        self.currencySymbol = "$"
         self.turn_passengerList = []
         self.change_list = []
         self.num_passengers = 3
@@ -140,13 +141,13 @@ class Game():
                         break
 
         try:
-            with open("tombstones.dat", "rb") as file_name:
+            with open("data/tombstones.dat", "rb") as file_name:
                 self.tombstone_list = pickle.load(file_name)
                 for tomb in self.tombstone_list:
                     tomb.status = "Old"
         except (EOFError, IOError):
             print("Error opening tombstones.dat, pickling an empty list..")
-            with open("tombstones.dat", "wb") as file_name:
+            with open("data/tombstones.dat", "wb") as file_name:
                 self.tombstone_list = []
                 pickle.dump([], file_name)
 
@@ -235,7 +236,7 @@ class Game():
 
                 pass_pic_container = pygame.Surface((75, 75)).convert()
                 pass_pic_container.fill((255, 255, 255))
-                pass_pic = pygame.image.load("res/img/50.png")
+                pass_pic = pygame.image.load(surface.passenger.image)
                 pass_pic = pygame.transform.scale(pass_pic, (70, 70))
 
                 if surface.passenger.health >= 50:
@@ -314,8 +315,8 @@ class Game():
 
             for tombstone in self.tombstone_list:
                 if tombstone.status == "Old":
-                    self.gameWindow.blit(self.tomb_image, (tombstone.xPos - self.tomb_image.get_width() / 2,
-                                                            tombstone.y_pos))
+                    self.gameWindow.blit(self.tombImage, (tombstone.xPos - self.tombImage.get_width() / 2,
+                                                            tombstone.yPos))
             for event in events:
                 if event.type == pygame.MOUSEMOTION:
                     self.mouseX, self.mouseY = event.pos
@@ -329,10 +330,10 @@ class Game():
                     in_turn_menu = False
                     break
 
-                if mouse_rect.collidelist([x.tomb_rect for x in self.tombstone_list]) != -1:
+                if mouse_rect.collidelist([x.tombRect for x in self.tombstone_list]) != -1:
                     if not mouse_rect.colliderect(self.turn_menu_surface.get_rect()):
                         tombstone_hover = self.tombstone_list[mouse_rect.collidelist(
-                            [x.tomb_rect for x in self.tombstone_list])]
+                            [x.tombRect for x in self.tombstone_list])]
                     break
                 else:
                     tombstone_hover = None
@@ -352,7 +353,7 @@ class Game():
                         [button.rect for button in self.option_button_list])]
                     if event.type == pygame.MOUSEBUTTONDOWN:
                         if option_hover.option == "Kill":
-                            self.killPassenger(option_hover.passenger_tab.passenger)
+                            self.killPassenger(option_hover.passengerTab.passenger)
                             option_hover = None
                             selected_option_menu = None
                             self.option_button_list = []
@@ -360,14 +361,14 @@ class Game():
                             self.turn_menu()
                         elif option_hover.option == "Info":
                             if selected_info_menu is None:
-                                selected_info_menu = self.passenger_info(option_hover.passenger_tab.passenger,
+                                selected_info_menu = self.passenger_info(option_hover.passengerTab.passenger,
                                                                          self.info_menu_blitPosition)
                                 break
                             else:
                                 selected_info_menu = None
                         elif option_hover.option == "Food":
                             if show_food_menu is None:
-                                show_food_menu = option_hover.passenger_tab.passenger
+                                show_food_menu = option_hover.passengerTab.passenger
                             else:
                                 show_food_menu = None
                 else:
@@ -518,8 +519,8 @@ class Game():
             for tombstone in self.tombstone_list:
                 tombstone.update(self.moveValue)
                 if tombstone.status == "Old":
-                    self.gameWindow.blit(self.tomb_image, (tombstone.xPos - self.tomb_image.get_width() / 2,
-                                                            tombstone.y_pos))
+                    self.gameWindow.blit(self.tombImage, (tombstone.xPos - self.tombImage.get_width() / 2,
+                                                            tombstone.yPos))
 
             self.gameWindow.blit(self.build_menu_bar(), (0, 0))
             pygame.display.flip()
@@ -568,7 +569,7 @@ class Game():
                 for affliction in afflictionsList:
                     if affliction.name == "Hunger":
                         copy_aff = copy.copy(affliction)
-                        copy_aff.health_change = -3 + (1.5*passenger.foodDivisions)
+                        copy_aff.healthChange = -3 + (1.5*passenger.foodDivisions)
                         passenger.afflictions.append(copy_aff)
                         self.change_list.append(passenger.name + " is hungry!")
                         break
@@ -576,7 +577,7 @@ class Game():
                 for affliction in afflictionsList:
                     if affliction.name == "Well Fed":
                         copy_aff = copy.copy(affliction)
-                        copy_aff.health_change = -3 + (1.5*passenger.foodDivisions)
+                        copy_aff.healthChange = -3 + (1.5*passenger.foodDivisions)
                         passenger.afflictions.append(copy_aff)
                         break
 
@@ -589,7 +590,7 @@ class Game():
                     groupAfflictions.remove(affliction)
                     self.change_list.append(passenger.name + " has recovered from " + str(affliction.name))
                 else:
-                    total_hp_change += affliction.health_change
+                    total_hp_change += affliction.healthChange
 
             if total_hp_change != 0:
                 gain_or_loss = "lost "
@@ -603,7 +604,7 @@ class Game():
                     passenger.health = 100
 
                 if passenger.health != 100:
-                    format_args = (passenger_name, gain_or_loss,
+                    format_args = (passengerName, gain_or_loss,
                                    str(abs(total_hp_change)),
                                    str(passenger.health))
                     change_string = "{} has {} {} health for a total of {}".format(*format_args)
@@ -697,22 +698,22 @@ class Game():
         self.begin_play()
 
     def tombstone_info(self, tombstone):
-        tomb_surface = pygame.Surface((200, 300)).convert()
-        tomb_surface.fill((175, 175, 175))
+        tombSurface = pygame.Surface((200, 300)).convert()
+        tombSurface.fill((175, 175, 175))
         font = pygame.font.Font(None, 18)
         blit_x = 0
         face_image = pygame.image.load(resourcePath + "img/Faces/" + tombstone.passenger.picture + ".png")
-        tomb_surface.blit(face_image, (tomb_surface.get_width()/2 - face_image.get_width()/2, 10))
-        tomb_surface.blit(font.render("Name: %s" % tombstone.passenger.name, 1, (0, 0, 0)), (5, 110))
-        tomb_surface.blit(font.render("Age : %s" % tombstone.passenger.age, 1, (0, 0, 0)), (5, 120))
-        tomb_surface.blit(font.render("Cause of Death: %s" % tombstone.cause_of_death, 1, (0, 0, 0)), (5, 130))
-        tomb_surface.blit(font.render("Position: %s" % tombstone.position, 1, (0, 0, 0)), (5, 140))
+        tombSurface.blit(face_image, (tombSurface.get_width()/2 - face_image.get_width()/2, 10))
+        tombSurface.blit(font.render("Name: %s" % tombstone.passenger.name, 1, (0, 0, 0)), (5, 110))
+        tombSurface.blit(font.render("Age : %s" % tombstone.passenger.age, 1, (0, 0, 0)), (5, 120))
+        tombSurface.blit(font.render("Cause of Death: %s" % tombstone.causeOfDeath, 1, (0, 0, 0)), (5, 130))
+        tombSurface.blit(font.render("Position: %s" % tombstone.position, 1, (0, 0, 0)), (5, 140))
 
-        if tombstone.xPos + tombstone.tomb_width <= self.gameWindow.get_width() - tomb_surface.get_width():
-            blit_x = tombstone.xPos + tombstone.tomb_width
-        elif tombstone.xPos + tombstone.tomb_width >= self.gameWindow.get_width() - tomb_surface.get_width():
-            blit_x = tombstone.xPos - tomb_surface.get_width()
-        self.gameWindow.blit(tomb_surface, (blit_x, tombstone.y_pos - tombstone.tomb_height))
+        if tombstone.xPos + tombstone.tombWidth <= self.gameWindow.get_width() - tombSurface.get_width():
+            blit_x = tombstone.xPos + tombstone.tombWidth
+        elif tombstone.xPos + tombstone.tombWidth >= self.gameWindow.get_width() - tombSurface.get_width():
+            blit_x = tombstone.xPos - tombSurface.get_width()
+        self.gameWindow.blit(tombSurface, (blit_x, tombstone.yPos - tombstone.tombHeight))
 
     def mini_event(self):
 
@@ -759,22 +760,22 @@ class Game():
         death_cause = "Unknown Causes" # If the death cause is not defined, display default cause (Unknown Causes)
 
         for affliction in passenger.afflictions:
-            if affliction.health_change < 0:
+            if affliction.healthChange < 0:
                 death_cause = affliction.name
                 break
         append_tomb = Tombstone(position=self.groupPos, status="New",
-                                passenger=passenger, cause_of_death=death_cause,
-                                tomb_width=self.tomb_image.get_width(),
-                                tomb_height=self.tomb_image.get_height())
+                                passenger=passenger, causeOfDeath=death_cause,
+                                tombWidth=self.tombImage.get_width(),
+                                tombHeight=self.tombImage.get_height())
         self.tombstone_list.append(append_tomb)
         print("Creating tombstone at position: " + str(self.groupPos))
 
         try:
-            with open("tombstones.dat", "rb") as file_name:
+            with open("data/tombstones.dat", "rb") as file_name:
                 temp_list = pickle.load(file_name)
                 temp_list.append(append_tomb)
 
-            with open("tombstones.dat", "wb") as file_name:
+            with open("data/tombstones.dat", "wb") as file_name:
                 pickle.dump(temp_list, file_name)
 
         except (EOFError, IOError) as error:
@@ -788,7 +789,7 @@ class Game():
             print("It's game over, man! Game over!")
             self.game_over()
 
-    def option_menu(self, passenger_tab, hover):
+    def option_menu(self, passengerTab, hover):
         pygame.font.init()
         option_offset = 20./6.5
         option_menu_surface = pygame.Surface((100+option_offset*2,
@@ -804,10 +805,10 @@ class Game():
                                                             hover=hover))
 
         for button in self.option_button_list:
-            option_menu_surface.blit(button.button_surface, (option_offset, yValue))
-            button.rect = pygame.Rect((passenger_tab.position[0] +
-                                       passenger_tab.size[0] + option_menu_surface.get_width() + option_offset,
-                                       passenger_tab.position[1] + yValue + option_menu_surface.get_height()),
+            option_menu_surface.blit(button.buttonSurface, (option_offset, yValue))
+            button.rect = pygame.Rect((passengerTab.position[0] +
+                                       passengerTab.size[0] + option_menu_surface.get_width() + option_offset,
+                                       passengerTab.position[1] + yValue + option_menu_surface.get_height()),
                                       button.size)
             yValue += button.size[1] + option_offset
         return option_menu_surface
@@ -824,42 +825,42 @@ class Game():
         passenger_info_filler_surface.fill((0, 255, 0))
         passenger_info_surface = pygame.Surface((400, 200)).convert()
         passenger_info_surface.fill((255, 255, 255))
-        passenger_picture = pygame.image.load(resourcePath + "img/Faces/" + passenger.picture + ".png")
-        passenger_info_surface.blit(passenger_picture, (0, 0))
+        passengerPicture = pygame.image.load(passenger.image)
+        passenger_info_surface.blit(passengerPicture, (0, 0))
 
         passenger_info_surface.blit(info_font.render("Name: ", 1, (255, 0, 0)),
-                                    (passenger_picture.get_width() + 5, float(passenger_picture.get_height())/10))
+                                    (passengerPicture.get_width() + 5, float(passengerPicture.get_height())/10))
         passenger_info_surface.blit(info_font.render(passenger.name, 1, (0, 0, 255)),
-                                    (passenger_picture.get_width() + 5 + info_font.size("Name: ")[0],
-                                     float(passenger_picture.get_height())/10))
+                                    (passengerPicture.get_width() + 5 + info_font.size("Name: ")[0],
+                                     float(passengerPicture.get_height())/10))
         passenger_info_surface.blit(info_font.render("Age: "+str(passenger.age), 1, (255, 0, 0)),
-                                    (passenger_picture.get_width() + 5, float(passenger_picture.get_height())/2))
+                                    (passengerPicture.get_width() + 5, float(passengerPicture.get_height())/2))
         passenger_info_surface.blit(info_font.render(str(passenger.age), 1, (0, 0, 255)),
-                                    (passenger_picture.get_width() + 5 + info_font.size("Age: ")[0],
-                                     float(passenger_picture.get_height())/2))
+                                    (passengerPicture.get_width() + 5 + info_font.size("Age: ")[0],
+                                     float(passengerPicture.get_height())/2))
         passenger_info_surface.blit(info_font.render("Gender: ", 1, (255, 0, 0)),
-                                    (passenger_picture.get_width()*2, float(passenger_picture.get_height()/2)))
+                                    (passengerPicture.get_width()*2, float(passengerPicture.get_height()/2)))
         passenger_info_surface.blit(info_font.render(passenger.gender, 1, (0, 0, 255)),
-                                    ((passenger_picture.get_width()*2) + info_font.size("Gender: ")[0],
-                                     float(passenger_picture.get_height()/2)))
+                                    ((passengerPicture.get_width()*2) + info_font.size("Gender: ")[0],
+                                     float(passengerPicture.get_height()/2)))
         passenger_info_surface.blit(info_font.render("Afflictions: ", 1, (255, 0, 0)),
-                                    (0, passenger_picture.get_height() + passenger_picture.get_height()/10))
+                                    (0, passengerPicture.get_height() + passengerPicture.get_height()/10))
         xValue += info_font.size("Afflictions: ")[0]
 
         if len(self.affliction_button_list) == 0:
             passenger_info_surface.blit(info_font.render("None", 1, (0, 0, 255)),
-                                        (xValue, passenger_picture.get_height() + passenger_picture.get_height()/10))
+                                        (xValue, passengerPicture.get_height() + passengerPicture.get_height()/10))
 
         else:
             for affliction_button in self.affliction_button_list:
                 if xValue + affliction_button.text_size[0] < passenger_info_surface.get_width():
                     passenger_info_surface.blit(info_font.render(affliction_button.name, 1, (0, 0, 255)),
                                                 (xValue,
-                                                 passenger_picture.get_height() +
-                                                 passenger_picture.get_height()/10))
+                                                 passengerPicture.get_height() +
+                                                 passengerPicture.get_height()/10))
                     affliction_button.update((xValue + blit_pos[0],
-                                              blit_pos[1] + passenger_picture.get_height() +
-                                              passenger_picture.get_height()/10))
+                                              blit_pos[1] + passengerPicture.get_height() +
+                                              passengerPicture.get_height()/10))
                     xValue += affliction_button.text_size[0]
                 else:
                     break
@@ -1173,8 +1174,7 @@ class Game():
                                                         self.gameWindow.get_height() - 100))
             self.gameWindow.blit(self.exit_button, (self.gameWindow.get_width() -
                                                      self.exit_button.get_width(), 0))
-            self.gameWindow.blit(countdown_text.render(shoot_countdown / clock.get_fps(), 1, 1,
-                                                        (0, 0, 255)),
+            self.gameWindow.blit(countdown_text.render(str(round(float(shoot_countdown) / clock.get_fps(), 1)), 1, (0, 0, 255)),
                                   (self.gameWindow.get_width()/2 - countdown_text.size(str(shoot_countdown))[0],
                                    self.gameWindow.get_height() - 100))
             self.gameWindow.blit(counter_text.render(str(counter), 1, (0, 0, 255)), (0, 0))
@@ -1201,7 +1201,7 @@ class Game():
         ferry_price = None
         if is_ferry:
             ferry_price = random.randint(50, 250)
-            options.append("Purchase a ferry ride across the river. [$" + str(ferry_price) + "]")
+            options.append("Purchase a ferry ride across the river for " + self.currencySymbol + str(ferry_price))
 
         in_menu = True
         font_height = font.size("LOREM IPSUM")[1]
