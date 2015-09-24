@@ -30,8 +30,8 @@ class Shop():
 		self.invContainer = Surface((self.shopSurface.get_width() - 20,
 									 self.shopSurface.get_height() / 2 - 35)).convert()
 		self.invContainer.fill((255, 255, 255))
-		self.titleFont = font.Font("res/fonts/oldwestern.ttf", 30)
-		self.textFont = font.Font("res/fonts/oldwestern.ttf", 20)
+		self.titleFont = font.Font("res/fonts/west.ttf", 17)
+		self.textFont = font.Font("res/fonts/west.ttf", 15)
 		
 		if (name == ""):
 			self.name = (choice(SHOP_PREFIX) + "'s " + choice(SHOP_SUFFIX)).capitalize()

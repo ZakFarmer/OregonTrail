@@ -7,6 +7,7 @@ import pickle
 import time
 
 from lib.afflictions import Afflictions
+from lib.background import Background
 from lib.backgroundSprites import BackgroundSprites
 from lib.riverDebris import RiverDebris
 from lib.passenger import Passenger
@@ -85,6 +86,7 @@ class Game():
         self.day = 0
         self.year = 1850
         self.season = ""
+        self.titleText = "OREGON TRAIL"
         self.mouseX = 0
         self.mouseY = 0
         self.currencySymbol = "$"
@@ -94,6 +96,7 @@ class Game():
         self.num_events = 10
         self.gameLength = 100
         self.groupPos = 0
+        self.background = Background('res/img/backgroundImage.png', [0,0])
         self.groupInventory = {"Horses": 1,
                                 "Spare Wheels": 2,
                                 "Food": 52*self.num_passengers}
@@ -103,6 +106,7 @@ class Game():
                             "Spare Wheels": 40,
                             "Food": 1}
         self.optionList = ["Kill", "Info", "Food"]
+        self.pepeOptionList = ["Steal", "Info", ]
         self.option_button_list = []
         self.logbook = []
         self.logbook_dict = {}
@@ -273,7 +277,7 @@ class Game():
                     surface.position[1] - surface.optionImage.get_height()/2
                 self.turn_menu_surface.blit(surface, surface.position)
 
-            self.game_surface.fill((135, 206, 250))
+            self.game_surface.blit(self.background.image, self.background.rect)
             self.gameWindow.blit(self.game_surface, (0, 0))
             self.gameWindow.blit(self.road, (0, float(self.gameWindow.get_height()) -
                                               float(self.gameWindow.get_height()) / 3))
@@ -386,9 +390,9 @@ class Game():
                                     self.groupInventory[the_button.item] += 1
                                     self.inTown.inventory[the_button.item] -= 1
                                 else:
-                                    self.output_text.append("You don't have enough money for [" + the_button.item + "]")
+                                    self.output_text.append("You don't have enough money for " + the_button.item)
                             else:
-                                self.output_text.append(self.inTown.name + " is out of [" + the_button.item + "]")
+                                self.output_text.append(self.inTown.name + " is out of " + the_button.item)
                     elif mouse_rect.collidelist([button.imageRect for button in self.inTown.sellButtonList]) != -1:
                         if event.type == pygame.MOUSEBUTTONDOWN:
                             the_button = self.inTown.sellButtonList[
@@ -400,9 +404,9 @@ class Game():
                                     self.groupInventory[the_button.item] -= 1
                                     self.inTown.inventory[the_button.item] += 1
                                 else:
-                                    self.output_text.append("You are out of [" + the_button.item + "]")
+                                    self.output_text.append("You are out of " + the_button.item)
                             else:
-                                self.output_text.append(self.inTown.name + " can't afford [" + the_button.item + "]")
+                                self.output_text.append(self.inTown.name + " can't afford " + the_button.item)
                     self.moveValue = self.groupInventory["Horses"]
                     self.inTown.update(self.groupInventory, self.groupMoney)
                     self.inTown.render()
@@ -489,7 +493,7 @@ class Game():
             clock.tick(30)
             if move_counter > 20:
                 keep_moving = False
-            self.game_surface.fill((135, 206, 250))
+            self.game_surface.blit(self.background.image, self.background.rect)
             self.gameWindow.blit(self.game_surface, (0, 0))
             self.gameWindow.blit(self.road, (0, float(self.gameWindow.get_height()) -
                                               float(self.gameWindow.get_height()) / 3))
@@ -549,7 +553,7 @@ class Game():
 
         for town in self.town_list:
             if self.groupPos == town.position:
-                self.change_list.append("You've arrived at "+town.name)
+                self.change_list.append("You've arrived at " + town.name)
 
         for passenger in passengerList:
             total_hp_change = 0.5
@@ -655,7 +659,7 @@ class Game():
         while in_title_screen:
             self.game_surface.fill((0, 0, 0))
             title_font = pygame.font.Font(resourcePath + "fonts/oldwestern.ttf", 100)
-            title_text = title_font.render("OREGON TRAIL", 1, (255, 255, 255))
+            title_text = title_font.render(self.titleText, 1, (255, 255, 255))
             title_text_pos = title_text.get_rect()
             title_text_pos.centerx = self.gameWindow.get_rect().centerx
             title_text_pos.centery = self.gameWindow.get_rect().centery - 40
@@ -853,7 +857,7 @@ class Game():
 
         else:
             for affliction_button in self.affliction_button_list:
-                if xValue + affliction_button.text_size[0] < passenger_info_surface.get_width():
+                if xValue + affliction_button.textSize[0] < passenger_info_surface.get_width():
                     passenger_info_surface.blit(info_font.render(affliction_button.name, 1, (0, 0, 255)),
                                                 (xValue,
                                                  passengerPicture.get_height() +
@@ -861,7 +865,7 @@ class Game():
                     affliction_button.update((xValue + blit_pos[0],
                                               blit_pos[1] + passengerPicture.get_height() +
                                               passengerPicture.get_height()/10))
-                    xValue += affliction_button.text_size[0]
+                    xValue += affliction_button.textSize[0]
                 else:
                     break
 

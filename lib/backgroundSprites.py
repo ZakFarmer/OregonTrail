@@ -18,7 +18,7 @@ class BackgroundSprites(sprite.Sprite):
 			if (self.picture == "cloud"):
 				randomY = randint(0, 100)
 			elif (self.picture == "tree"):
-				randomY = randint(int(game.gameWindow.get_height() - game.gameWindow.get_height() / 3 - 45),
+				randomY = randint(int(game.gameWindow.get_height() - game.gameWindow.get_height() / 3 - 80),
 								  int(game.gameWindow.get_height() - game.gameWindow.get_height() / 3 - 5))
 			else:
 				randomY = 0
