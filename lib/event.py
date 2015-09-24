@@ -2,13 +2,13 @@ from random import choice
 from pygame import Surface, image
 
 class Event():
-	def __init__(self, pos, name = None, resourcePath = ""):
-		self.goodOrBad = choie([-1, 1])
+	def __init__(self, xPos, name = None, resourcePath = ""):
+		self.goodOrBad = choice([-1, 1])
 		self.surface = Surface((0, 0)).convert()
 		self.randomEvents = [self.river, self.house]
 		self.name = name
 		self.resourcePath = resourcePath
-		self.pos = pos
+		self.xPos = xPos
 		self.eventTime = ""
 		if (self.name is not None):
 			if (self.name == "river"):
@@ -17,7 +17,7 @@ class Event():
 				self.house()
 		else:
 			self.event = choice(self.randomEvents)()
-		self.eventPos = self.pos
+		self.eventPos = self.xPos
 		self.posX = (-self.eventPos * 40) + 1280
 		
 	def river(self):

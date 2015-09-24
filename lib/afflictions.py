@@ -1,7 +1,7 @@
 class Afflictions():
-	def __init__(self, name, chanceToInfect, infectivity, primeSeason, healthChange, recoveryTime):
+	def __init__(self, name, infectivityChance, infectivity, primeSeason, healthChange, recoveryTime):
 		self.name = name
-		self.chanceToInfect = chanceToInfect
+		self.infectivityChance = infectivityChance
 		self.infectivity = infectivity
 		self.primeSeason = primeSeason
 		self.healthChange = healthChange

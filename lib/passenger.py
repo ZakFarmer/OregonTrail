@@ -1,5 +1,5 @@
 class Passenger():
-	def __init__(self, name, age, gender, image):
+	def __init__(self, name, age, gender, image = "res/img/50.png"):
 		self.name = name
 		self.age = age
 		self.gender = gender

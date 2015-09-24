@@ -21,7 +21,7 @@ class Shop():
 		self.resourcePath = resourcePath
 		self.buyButtonList = []
 		self.sellButtonList = []
-		self.posX = (-self.position * 40) + 1280
+		self.xPos = (-self.position * 40) + 1280
 		
 		self.shopSurface = Surface((500, 300)).convert()
 		self.sepLine = Surface((self.shopSurface.get_width(), 10)).convert()
@@ -30,11 +30,11 @@ class Shop():
 		self.invContainer = Surface((self.shopSurface.get_width() - 20,
 									 self.shopSurface.get_height() / 2 - 35)).convert()
 		self.invContainer.fill((255, 255, 255))
-		self.titleFont = font.Font(None, 30)
-		self.textFont = font.Font(None, 20)
+		self.titleFont = font.Font("res/fonts/oldwestern.ttf", 30)
+		self.textFont = font.Font("res/fonts/oldwestern.ttf", 20)
 		
 		if (name == ""):
-			self.name = capitalize(choice(SHOP_PREFIX) + "'s " + choice(SHOP_SUFFIX))
+			self.name = (choice(SHOP_PREFIX) + "'s " + choice(SHOP_SUFFIX)).capitalize()
 		else:
 			self.name = name
 			
@@ -62,7 +62,7 @@ class Shop():
 		self.render()
 		
 	def move(self, moveValue):
-		self.posX += (2 * moveValue)
+		self.xPos += (2 * moveValue)
 		self.render()
 		
 	def render(self):
@@ -118,7 +118,7 @@ class Shop():
 															 item = key,
 															 imagePosition = (250, self.yValue),
 															 rectPosition = buttonPos,
-															 resourcePath = self.rresourcePath))
+															 resourcePath = self.resourcePath))
 			self.yValue += 30
 			
 		for button in self.sellButtonList:

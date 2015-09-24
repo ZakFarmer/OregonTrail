@@ -52,7 +52,7 @@ class Buffalo():
 											self.healthBarContainer.get_height())).convert()
 											
 			if (self.health >= 50):
-				self.healthColour = (float((self.maxHealth - self.health) * 2 / self.max_healt * 255), 255, 0)
+				self.healthColour = (float((self.maxHealth - self.health) * 2 / self.maxHealth * 255), 255, 0)
 			else:
 				self.healthColour = (255, float(self.health * 2 / self.maxHealth * 255), 0)
 				

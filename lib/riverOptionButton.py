@@ -13,7 +13,7 @@ class RiverOptionButton():
 			self.surface.fill((255, 255, 255))
 		self.rect = Rect(self.pos, self.size)
 		self.buttonFont = font.Font(None, 25)
-		self.surface.blit(self.buttonFont.render(self.option, 1, (0, 0, 0))
+		self.surface.blit(self.buttonFont.render(self.option, 1, (0, 0, 0)),
 						 (5, self.size[1] / 2 - self.buttonFont.size("Lorem Ipsum")[1] / 2))
 						 
 	def update(self, hover):
