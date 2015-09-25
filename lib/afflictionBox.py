@@ -11,5 +11,5 @@ class AfflictionBox():
 		
 	def update(self, rectPosition):
 		self.rectPosition = rectPosition
-		self.textRect.center.x = rectPosition[0] + self.textSize[0]
-		self.textRect.center.y = rectPosition[1] + self.textSize[1]
+		self.textRect.centerx = rectPosition[0] + self.textSize[0]
+		self.textRect.centery = rectPosition[1] + self.textSize[1]

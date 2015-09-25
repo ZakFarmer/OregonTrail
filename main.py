@@ -656,6 +656,8 @@ class Game():
         play_button_col = (255, 255, 255)
         in_title_screen = True
         title = True
+        pygame.mixer.music.load("res/sounds/music1.wav")
+        pygame.mixer.music.play()
         while in_title_screen:
             self.game_surface.fill((0, 0, 0))
             title_font = pygame.font.Font(resourcePath + "fonts/oldwestern.ttf", 100)
@@ -696,6 +698,7 @@ class Game():
                     if title and play_button.collidepoint(self.mouseX, self.mouseY):
                         self.game_surface.fill((135, 206, 250))
                         self.gameWindow.blit(self.game_surface, (0, 0))
+                        pygame.mixer.music.fadeout(2)
                         title = False
                         in_title_screen = False
             pygame.display.flip()
@@ -1120,7 +1123,7 @@ class Game():
             cooldown_background.fill((0, 0, 0))
             cooldown_bar.fill((255, 0, 0))
             cooldown_background.blit(cooldown_bar, (0, 0))
-            background_colour = (0, 255, 0)
+            background_colour = (50, 150, 50)
             self.game_surface.fill(background_colour)
             self.gameWindow.blit(self.game_surface, (0, 0))
 
