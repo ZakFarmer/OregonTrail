@@ -145,12 +145,14 @@ class Game():
                         break
 
         try:
+            # Try to open tombstones.dat file (contains tombstone data)
             with open("data/tombstones.dat", "rb") as file_name:
                 self.tombstone_list = pickle.load(file_name)
                 for tomb in self.tombstone_list:
                     tomb.status = "Old"
         except (EOFError, IOError):
-            print("Error opening tombstones.dat, pickling an empty list..")
+            # If the data file is not able to be opened, open an empty list
+            print("Error opening tombstones.dat")
             with open("data/tombstones.dat", "wb") as file_name:
                 self.tombstone_list = []
                 pickle.dump([], file_name)
@@ -656,8 +658,8 @@ class Game():
         play_button_col = (255, 255, 255)
         in_title_screen = True
         title = True
-        pygame.mixer.music.load("res/sounds/music1.wav")
-        pygame.mixer.music.play()
+        # pygame.mixer.music.load("res/sounds/music1.wav")
+        # pygame.mixer.music.play()
         while in_title_screen:
             self.game_surface.fill((0, 0, 0))
             title_font = pygame.font.Font(resourcePath + "fonts/oldwestern.ttf", 100)
